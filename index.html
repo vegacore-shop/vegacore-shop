@@ -3,83 +3,237 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Vegacore Shop</title>
+  <title>Vegacore Shop - Data Engineering Products</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f8f9fa; }
-    header { background: #2d5a27; color: white; padding: 1.5rem 2rem; }
-    header h1 { font-size: 1.8rem; }
-    nav { background: #3d7a37; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
-    nav ul { list-style: none; display: flex; gap: 1.5rem; }
-    nav a { color: white; text-decoration: none; }
-    .hero { background: linear-gradient(135deg, #3d7a37 0%, #2d5a27 100%); color: white; padding: 4rem 2rem; text-align: center; }
-    .hero h2 { font-size: 2.5rem; margin-bottom: 1rem; }
-    .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
-    .products { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 2rem; }
-    .product { background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: transform 0.2s; }
-    .product:hover { transform: translateY(-4px); }
-    .product-img { height: 200px; background: #e8f5e9; display: flex; align-items: center; justify-content: center; font-size: 3rem; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0a0a0f; color: #e0e0e0; }
+    header { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); color: white; padding: 2rem; border-bottom: 2px solid #00d4ff; }
+    header h1 { font-size: 2rem; background: linear-gradient(90deg, #00d4ff, #00ff88); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    nav { background: rgba(22, 33, 62, 0.95); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 100; }
+    nav ul { list-style: none; display: flex; gap: 2rem; }
+    nav a { color: #e0e0e0; text-decoration: none; transition: color 0.3s; }
+    nav a:hover { color: #00d4ff; }
+    .hero { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); color: white; padding: 5rem 2rem; text-align: center; position: relative; overflow: hidden; }
+    .hero::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(circle at 20% 80%, rgba(0, 212, 255, 0.1) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(0, 255, 136, 0.1) 0%, transparent 50%); }
+    .hero h2 { font-size: 3rem; margin-bottom: 1rem; position: relative; }
+    .hero p { font-size: 1.2rem; color: #888; position: relative; }
+    .container { max-width: 1400px; margin: 0 auto; padding: 3rem 2rem; }
+    .products { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 2rem; }
+    .product { background: linear-gradient(145deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; overflow: hidden; border: 1px solid #2a2a4a; transition: all 0.3s ease; position: relative; }
+    .product:hover { transform: translateY(-8px); border-color: #00d4ff; box-shadow: 0 20px 60px rgba(0, 212, 255, 0.15); }
+    .product-badge { position: absolute; top: 1rem; right: 1rem; background: linear-gradient(135deg, #00d4ff, #00ff88); color: #0a0a0f; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.75rem; font-weight: bold; }
+    .product-img { height: 140px; background: linear-gradient(135deg, #2a2a4a 0%, #1a1a2e 100%); display: flex; align-items: center; justify-content: center; font-size: 3rem; border-bottom: 1px solid #2a2a4a; }
     .product-info { padding: 1.5rem; }
-    .product-name { font-size: 1.2rem; margin-bottom: 0.5rem; }
-    .product-desc { color: #666; font-size: 0.9rem; margin-bottom: 1rem; }
-    .product-price { font-size: 1.3rem; font-weight: bold; color: #2d5a27; }
-    footer { background: #333; color: white; padding: 2rem; text-align: center; margin-top: 3rem; }
+    .product-name { font-size: 1.5rem; margin-bottom: 0.5rem; background: linear-gradient(90deg, #fff, #00d4ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .product-tagline { color: #00ff88; font-size: 0.9rem; margin-bottom: 1rem; font-style: italic; }
+    .product-desc { color: #888; font-size: 0.85rem; margin-bottom: 1rem; line-height: 1.6; }
+    .product-details { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin-bottom: 1.5rem; }
+    .detail-item { background: rgba(0, 212, 255, 0.05); padding: 0.6rem; border-radius: 8px; border-left: 2px solid #00d4ff; }
+    .detail-label { font-size: 0.7rem; color: #666; text-transform: uppercase; letter-spacing: 1px; }
+    .detail-value { font-size: 0.85rem; color: #e0e0e0; }
+    .product-price { font-size: 2rem; font-weight: bold; color: #00d4ff; margin-bottom: 1rem; }
+    .product-price span { font-size: 1rem; color: #666; }
+    .buy-btn { display: block; width: 100%; padding: 1rem; background: linear-gradient(135deg, #00d4ff, #00ff88); color: #0a0a0f; border: none; border-radius: 8px; font-size: 1rem; font-weight: bold; cursor: pointer; transition: all 0.3s; text-align: center; text-decoration: none; }
+    .buy-btn:hover { transform: scale(1.02); box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3); }
+    .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin: 3rem 0; }
+    .stat-card { background: linear-gradient(145deg, #1a1a2e 0%, #16213e 100%); padding: 2rem; border-radius: 12px; border: 1px solid #2a2a4a; text-align: center; }
+    .stat-value { font-size: 2rem; font-weight: bold; color: #00d4ff; }
+    .stat-label { color: #666; font-size: 0.9rem; margin-top: 0.5rem; }
+    footer { background: #0a0a0f; color: #666; padding: 3rem 2rem; text-align: center; border-top: 1px solid #2a2a4a; }
+    footer a { color: #00d4ff; text-decoration: none; }
+    @media (max-width: 768px) {
+      .hero h2 { font-size: 2rem; }
+      .products { grid-template-columns: 1fr; }
+      nav ul { gap: 1rem; }
+    }
   </style>
 </head>
 <body>
   <header>
-    <h1>🥬 Vegacore Shop</h1>
+    <h1>Vegacore Shop</h1>
   </header>
   <nav>
+    <div><strong style="color: #00d4ff;">Vegacore</strong></div>
     <ul>
       <li><a href="/">Home</a></li>
       <li><a href="/#products">Products</a></li>
-      <li><a href="#">About</a></li>
+      <li><a href="/#pricing">Pricing</a></li>
     </ul>
   </nav>
   <div class="hero">
-    <h2>Fresh & Organic Products</h2>
-    <p>Shop the best quality vegetables and fruits</p>
+    <h2>Data Engineering Learning Path</h2>
+    <p>From beginner prompts to professional mentorship - grow your data career</p>
   </div>
   <div class="container" id="products">
-    <h2 style="margin-bottom: 1.5rem;">Our Products</h2>
+    <h2 style="margin-bottom: 2rem; color: #fff;">Our Products</h2>
     <div class="products">
       <div class="product">
-        <div class="product-img">🥬</div>
+        <div class="product-badge">Beginner</div>
+        <div class="product-img">📝</div>
         <div class="product-info">
-          <div class="product-name">Fresh Spinach</div>
-          <div class="product-desc">Organic baby spinach leaves</div>
-          <div class="product-price">$4.99 / bunch</div>
+          <div class="product-name">Lumora</div>
+          <div class="product-tagline">AI prompts for data engineers</div>
+          <div class="product-desc">Curated AI prompts to accelerate your learning. Perfect for beginners starting their data engineering journey.</div>
+          <div class="product-details">
+            <div class="detail-item">
+              <div class="detail-label">Format</div>
+              <div class="detail-value">PDF</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Delivery</div>
+              <div class="detail-value">Instant Download</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Platform</div>
+              <div class="detail-value">Gumroad</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Audience</div>
+              <div class="detail-value">Beginners</div>
+            </div>
+          </div>
+          <div class="product-price">₹10 <span>per sale</span></div>
+          <a href="#" class="buy-btn">Get Lumora</a>
         </div>
       </div>
       <div class="product">
-        <div class="product-img">🍅</div>
+        <div class="product-badge">Juniors</div>
+        <div class="product-img">📓</div>
         <div class="product-info">
-          <div class="product-name">Tomatoes</div>
-          <div class="product-desc">Vine-ripened tomatoes</div>
-          <div class="product-price">$3.99 / lb</div>
+          <div class="product-name">Datova</div>
+          <div class="product-tagline">Pre-built notebooks that work</div>
+          <div class="product-desc">Production-ready Jupyter notebooks with real-world datasets. Learn by doing with hands-on exercises.</div>
+          <div class="product-details">
+            <div class="detail-item">
+              <div class="detail-label">Format</div>
+              <div class="detail-value">.ipynb + PDF</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Delivery</div>
+              <div class="detail-value">Instant Download</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Platform</div>
+              <div class="detail-value">Gumroad</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Audience</div>
+              <div class="detail-value">Juniors</div>
+            </div>
+          </div>
+          <div class="product-price">₹100 <span>per sale</span></div>
+          <a href="#" class="buy-btn">Get Datova</a>
         </div>
       </div>
       <div class="product">
-        <div class="product-img">🥕</div>
+        <div class="product-badge">Mid-Level</div>
+        <div class="product-img">🎓</div>
         <div class="product-info">
-          <div class="product-name">Carrots</div>
-          <div class="product-desc">Fresh organic carrots</div>
-          <div class="product-price">$2.49 / bunch</div>
+          <div class="product-name">Nexora</div>
+          <div class="product-tagline">Automate your data workflow</div>
+          <div class="product-desc">Complete course modules with Python scripts. Learn automation, ETL pipelines, and workflow orchestration.</div>
+          <div class="product-details">
+            <div class="detail-item">
+              <div class="detail-label">Format</div>
+              <div class="detail-value">Video + .py</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Delivery</div>
+              <div class="detail-value">Instant + Access Link</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Platform</div>
+              <div class="detail-value">Graphy + Gumroad</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Audience</div>
+              <div class="detail-value">Mid-Level</div>
+            </div>
+          </div>
+          <div class="product-price">₹1,000 <span>per sale</span></div>
+          <a href="#" class="buy-btn">Get Nexora</a>
         </div>
       </div>
       <div class="product">
-        <div class="product-img">🥦</div>
+        <div class="product-badge">Advanced</div>
+        <div class="product-img">🚀</div>
         <div class="product-info">
-          <div class="product-name">Broccoli</div>
-          <div class="product-desc">Fresh green broccoli</div>
-          <div class="product-price">$3.49 / head</div>
+          <div class="product-name">Vekora</div>
+          <div class="product-tagline">End-to-end data engineering</div>
+          <div class="product-desc">Complete course with real pipeline projects. From data ingestion to deployment - master the full stack.</div>
+          <div class="product-details">
+            <div class="detail-item">
+              <div class="detail-label">Format</div>
+              <div class="detail-value">Video + GitHub</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Delivery</div>
+              <div class="detail-value">Course Access</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Platform</div>
+              <div class="detail-value">Graphy</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Audience</div>
+              <div class="detail-value">Senior Aspirants</div>
+            </div>
+          </div>
+          <div class="product-price">₹10,000 <span>per sale</span></div>
+          <a href="#" class="buy-btn">Get Vekora</a>
         </div>
+      </div>
+      <div class="product">
+        <div class="product-badge" style="background: linear-gradient(135deg, #ff6b6b, #ff8e53);">Premium</div>
+        <div class="product-img">🎯</div>
+        <div class="product-info">
+          <div class="product-name">Zenova</div>
+          <div class="product-tagline">Your data career, accelerated</div>
+          <div class="product-desc">3 months of 1:1 mentorship. Personalized learning path, resume reviews, and interview preparation.</div>
+          <div class="product-details">
+            <div class="detail-item">
+              <div class="detail-label">Format</div>
+              <div class="detail-value">Live Sessions</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Duration</div>
+              <div class="detail-value">3 Months</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Platform</div>
+              <div class="detail-value">Calendly + Bank</div>
+            </div>
+            <div class="detail-item">
+              <div class="detail-label">Audience</div>
+              <div class="detail-value">Professionals</div>
+            </div>
+          </div>
+          <div class="product-price">₹1,00,000 <span>per sale</span></div>
+          <a href="#" class="buy-btn">Get Zenova</a>
+        </div>
+      </div>
+    </div>
+    <div class="stats" id="pricing">
+      <div class="stat-card">
+        <div class="stat-value">₹1,11,050</div>
+        <div class="stat-label">Monthly Target (5 sales)</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">₹10,841</div>
+        <div class="stat-label">Net Earned per Sale (avg)</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">5</div>
+        <div class="stat-label">Products</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">₹1,01,900</div>
+        <div class="stat-label">Max Net per Sale</div>
       </div>
     </div>
   </div>
   <footer>
-    <p>&copy; 2026 Vegacore Shop. All rights reserved.</p>
+    <p>&copy; 2026 <a href="https://github.com/vegacore-shop">Vegacore Shop</a>. All rights reserved.</p>
   </footer>
 </body>
 </html>
